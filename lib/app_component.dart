@@ -21,10 +21,11 @@ class AppComponent implements OnInit{
   AppComponent(this.repository);
 
   @override
-  ngOnInit() => load();
+  void ngOnInit() => load();
 
-  FutureOr<Null> load() async =>
+  Future<Null> load() async {
     data = (await repository.get()).ip;
+  }
 }
 
 
@@ -35,6 +36,18 @@ class SampleRepository {
 
   Future<SampleJson> get() async {
     var response = await _http.get("http://ip.jsontest.com/");
-    return new SampleJson.fromJson(JSON.decode(response.body) as Map);
+    return new SampleJson.fromJson(JSON.decode(response.body) as Map<String, dynamic>);
+  }
+}
+
+
+@Injectable()
+class SampleService {
+  BrowserClient _http;
+  SampleService(this._http);
+
+  Future<Null> execute() async {
+    var response = await _http.get("http://ip.jsontest.com/");
+    print(JSON.decode(response.body));
   }
 }
